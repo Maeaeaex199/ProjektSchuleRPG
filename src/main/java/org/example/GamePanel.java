@@ -1,10 +1,11 @@
-package main;
+package org.example;
 
 import javax.swing.*;
 import java.awt.*;
 
 import CollisionChecker.CollisionChecker;
 import entity.Player;
+import org.example.KeyHandler;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -25,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
-    main.KeyHandler keyH = new main.KeyHandler();
+    KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this, keyH);
