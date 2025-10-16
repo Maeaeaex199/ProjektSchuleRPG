@@ -18,6 +18,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ESCAPE) {
             escapePressed = true;
         }
+
         if (code == KeyEvent.VK_W) {
             upPressed = true;
         }
