@@ -1,5 +1,7 @@
 package tile;
 
+import org.example.GamePanel;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -8,11 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class TileManager {
-    main.GamePanel gp;
+    GamePanel gp;
     tile.Tile[] tile;
     int[][] mapTileNum;
 
-    public TileManager(main.GamePanel gp) {
+    public TileManager(GamePanel gp) {
         this.gp = gp;
 
         // Tiles dynamisch laden (legt tile-Array an)

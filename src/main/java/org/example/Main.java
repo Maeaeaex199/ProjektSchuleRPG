@@ -9,7 +9,7 @@ public class Main {
         window.setResizable(false);
         window.setTitle("NewGame");
 
-        main.GamePanel gamePanel = new main.GamePanel();
+        GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
 
         window.pack();

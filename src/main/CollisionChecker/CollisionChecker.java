@@ -1,9 +1,11 @@
 package CollisionChecker;
 
-public class CollisionChecker {
-    main.GamePanel gp;
+import org.example.GamePanel;
 
-    public CollisionChecker(main.GamePanel gp) {
+public class CollisionChecker {
+    GamePanel gp;
+
+    public CollisionChecker(GamePanel gp) {
         this.gp = gp;
     }
 
