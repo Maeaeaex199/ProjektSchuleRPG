@@ -35,9 +35,15 @@ public class TileManager {
                 "/tiles/road01.png"   // 5
         };
 
+
+
+
         tile = new tile.Tile[paths.length];
 
+        java.util.Set<Integer> collidable = java.util.Set.of(1, 2, 4);
+
         for (int i = 0; i < paths.length; i++) {
+            tile[i] = new tile.Tile();
             try (InputStream is = getClass().getResourceAsStream(paths[i])) {
                 if (is == null) {
                     throw new IllegalStateException("Kachelbild nicht gefunden: " + paths[i]);
@@ -47,6 +53,7 @@ public class TileManager {
             } catch (IOException e) {
                 throw new RuntimeException("Fehler beim Laden der Kachel: " + paths[i], e);
             }
+            tile[i].collision = collidable.contains(i);
         }
     }
 
