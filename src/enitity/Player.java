@@ -102,6 +102,8 @@ public class Player extends Entity {
             direction = "right";
             worldX += speed;
         }
+        collisionOn = false;
+
     }
     public void draw(Graphics2D g2) {
         /*g2.setColor(Color.WHITE);
