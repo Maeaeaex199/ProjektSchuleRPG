@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+
+import CollisionChecker.CollisionChecker;
 import entity.Player;
 import tile.TileManager;
 
@@ -25,6 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileM = new TileManager(this);
     main.KeyHandler keyH = new main.KeyHandler();
     Thread gameThread;
+    CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this, keyH);
 
     // These fields are currently unused; keep or remove as needed.
