@@ -10,53 +10,63 @@ import java.io.InputStreamReader;
 public class TileManager {
     main.GamePanel gp;
     tile.Tile[] tile;
-    // Erste Dimension = Spalten, zweite = Zeilen (passt zu mapTileNum[col][row])
     int[][] mapTileNum;
 
     public TileManager(main.GamePanel gp) {
         this.gp = gp;
-        tile = new tile.Tile[5];
-        // Korrektur: [maxScreenCol][maxScreenRow] statt [maxScreenRow][maxScreenCol]
+
+        // Tiles dynamisch laden (legt tile-Array an)
+        getTileImage();
+
+        // Map passend zu den World-Dimensionen anlegen
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
-        getTileImage();
         loadMap();
     }
 
     public void getTileImage() {
-        try {
-            tile[0] = new tile.Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass00.png"));
+        // Alle Tile-Pfade an einer Stelle, keine "magischen" Indizes
+        String[] paths = new String[] {
+                "/tiles/grass00.png", // 0
+                "/tiles/wall.png",    // 1
+                "/tiles/water01.png", // 2
+                "/tiles/earth.png",   // 3
+                "/tiles/tree.png",    // 4
+                "/tiles/road01.png"   // 5
+        };
 
-            tile[1] = new tile.Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
+        tile = new tile.Tile[paths.length];
 
-            tile[2] = new tile.Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water01.png"));
-
-            tile[3] = new tile.Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
-
-            tile[4] = new tile.Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/road01.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (int i = 0; i < paths.length; i++) {
+            try (InputStream is = getClass().getResourceAsStream(paths[i])) {
+                if (is == null) {
+                    throw new IllegalStateException("Kachelbild nicht gefunden: " + paths[i]);
+                }
+                tile[i] = new tile.Tile();
+                tile[i].image = ImageIO.read(is);
+            } catch (IOException e) {
+                throw new RuntimeException("Fehler beim Laden der Kachel: " + paths[i], e);
+            }
         }
     }
 
     public void loadMap() {
-        try (InputStream is = getClass().getResourceAsStream("/maps/map.txt");
+        try (InputStream is = getClass().getResourceAsStream("/maps/world01.txt");
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
-            for (int row = 0; row < gp.maxScreenRow; row++) {
+            if (is == null) {
+                throw new IllegalStateException("Mapdatei nicht gefunden: /maps/world01.txt");
+            }
+
+            // Über die World-Dimensionen iterieren, nicht Screen
+            for (int row = 0; row < gp.maxWorldRow; row++) {
                 String line = br.readLine();
                 if (line == null) {
-                    // Weniger Zeilen als erwartet: Rest bleibt 0 (Standard-Tile)
                     break;
                 }
 
                 String[] numbers = line.trim().split("\\s+");
-                for (int col = 0; col < gp.maxScreenCol; col++) {
+                for (int col = 0; col < gp.maxWorldCol; col++) {
                     int num = 0;
                     if (col < numbers.length) {
                         try {
@@ -66,22 +76,21 @@ public class TileManager {
                         }
                     }
 
-                    // Defensive Begrenzung, falls Map ungültige Tile-IDs enthält
+                    // Absichern gegen ungültige Tile-IDs
                     if (num < 0 || num >= tile.length) {
                         num = 0;
                     }
                     mapTileNum[col][row] = num;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Laden der Map", e);
         }
     }
 
     public void draw(Graphics2D g2) {
         int worldCol = 0;
         int worldRow = 0;
-
 
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
             int tileNum = mapTileNum[worldCol][worldRow];
@@ -93,10 +102,6 @@ public class TileManager {
 
             if (tileNum < 0 || tileNum >= tile.length) {
                 tileNum = 0;
-            }
-
-            if(worldX) {
-
             }
 
             g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
